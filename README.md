@@ -29,7 +29,7 @@ gradle
 - 初始化 SDK
 
 ```java
- import net.t1y.v5.*;
+ import net.t1y.v5.android*;
 ```
 ```java
  // 初始化 SDK 配置
