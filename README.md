@@ -19,7 +19,7 @@ gradle
 	}
 
   dependencies {
-		implementation '等待更新'
+		implementation 'com.github.Ceepear:T1y-android-sdk:1.0.1'
 	}
  
 ```
