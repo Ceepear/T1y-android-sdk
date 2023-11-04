@@ -1,7 +1,5 @@
 package net.t1y.v5.android;
 
-import android.webkit.SafeBrowsingResponse;
-
 import net.t1y.v5.android.batch.CreateBatch;
 import net.t1y.v5.android.batch.DeleteBatch;
 import net.t1y.v5.android.query.CreateCallback;
@@ -26,7 +24,7 @@ public class T1YQuery {
             T1Cloud.regressionThread(runnable);
         });
     }
-    public <T extends DataBean> void getDataAll(Class<T> tClass,int page,int size, QueryCallback<List<T>> queryCallback){
+    public <T extends DataBean> void getDataAll(Class<T> tClass, int page, int size, QueryCallback<List<T>> queryCallback){
         T1Cloud.travelThread(()->{
             String data = T1Cloud.client().readAll(tClass.getSimpleName(),page,size);
             Runnable runnable = T1Cloud.getStrategyFactory().load("query", data, (QueryCallback<String>) (code, msg, data1) -> {

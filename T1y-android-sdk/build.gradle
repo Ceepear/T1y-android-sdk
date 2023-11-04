@@ -1,11 +1,21 @@
 plugins {
     alias(libs.plugins.androidLibrary)
 }
+apply {
+    plugin("maven-publish")
+}
+task generateSourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+}
+
+
 
 android {
     namespace 'net.t1y.v5'
     compileSdk 34
-
+    publishing {
+        singleVariant("release")
+    }
     defaultConfig {
         minSdk 16
 
@@ -24,7 +34,16 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                // ......
+            }
+        }
+    }
+}
 dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'com.google.code.gson:gson:2.10.1'
