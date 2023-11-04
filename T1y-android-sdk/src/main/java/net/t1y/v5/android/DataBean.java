@@ -17,7 +17,7 @@ public class DataBean {
         return _id;
     }
 
-    public final void updateCache(String key, Object data){
+    protected final void updateCache(String key, Object data){
         if(key == null && data == null){
             this.updateCachePool = new JSONObject();
             System.gc();
