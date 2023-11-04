@@ -30,7 +30,7 @@ gradle
    目前DataBean、T1YQuery的回调均在主线程，无需另外进行activity.runOnUiThread 或 view.post 或 handler.sendMessage
 - 初始化 SDK
 ```java
- import net.t1y.v5.android*;
+ import net.t1y.v5.android.*;
 ```
 ```java
  // 初始化 SDK 配置
