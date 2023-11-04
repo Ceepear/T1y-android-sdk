@@ -47,11 +47,9 @@ gradle
 ```
 - 拿到T1YClient
 ```java
-/*
   //如果不想要通过DataBean的方式可以使用
  T1YClient client = T1Cloud.client();
   //拿到T1YClient对象
-*/
 ```
 -例子Class
 ```java
