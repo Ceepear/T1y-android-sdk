@@ -1,13 +1,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
+    id 'maven-publish'
 }
-apply {
-    plugin("maven-publish")
-}
-task generateSourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-}
-
 
 
 android {
@@ -16,6 +10,12 @@ android {
     publishing {
         singleVariant("release")
     }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
+
     defaultConfig {
         minSdk 16
 
@@ -37,21 +37,17 @@ android {
 afterEvaluate {
     publishing {
         publications {
-            maven(MavenPublication) {
-                groupId = 'com.github.Ceepear'
-                artifactId = 'T1y-android-sdk'
-                version = "1.0.2"
-                from components.release
-                pom {
-                    description = 'A description of my library'
-                }
-            }
             release(MavenPublication) {
-                from components.release
-
+                groupId = 'com.github.Ceepear' // 这个是依赖库的组 id
             }
         }
     }
+}
+
+
+
+task generateSourcesJar(type: Jar){
+    from android.sourceSets.main.java.srcDirs
 }
 dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
