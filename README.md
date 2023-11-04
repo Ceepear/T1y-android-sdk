@@ -25,9 +25,10 @@ gradle
 ```
 
 ## 类库说明 
+- 回调线程问题
 
+   目前DataBean、T1YQuery的回调均在主线程，无需另外进行activity.runOnUiThread 或 view.post 或 handler.sendMessage
 - 初始化 SDK
-
 ```java
  import net.t1y.v5.android*;
 ```
@@ -41,37 +42,142 @@ gradle
  APIKey（必填）：string类型  即 API_Key , 请从T1后端云后台获取。
  onSecretKeyGetInterface（选填）：OnSecretKeyGetInterface类型（接口），获取SecretKey的接口，可将SecretKey通过三方工具加密后，由该接口发起解密并回调。如：（）->return decrypt.code(xxxxxxxxx);
  secretKey(选填）：String类型 即SecretKey ，当启用其他混淆、加密、加固等防御手段后，可无需OnSecretKeyGetInterface，直接输入secretKey
+ 不用担心内存泄漏问题！静态字段会被在程序关闭时设为null
  */
 ```
+- 拿到T1YClient
+```java
+/*
+  //如果不想要通过DataBean的方式可以使用
+ T1YClient client = T1Cloud.client();
+  //拿到T1YClient对象
+*/
+```
+-例子Class
+```java
+    public class User extends DataBean {
+    private String username;
+    private int age = -1;
+    private long QQ;
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public long getQQ() {
+        return QQ;
+    }
+
+    public void setQQ(long QQ) {
+        this.QQ = QQ;
+    }
+
+    public void setAge(int age) {
+        if(age != -1){
+            updateCache("age",age);
+            //如果不想要提交整个对象修改，可在每个set方法内，执行一次 updateCache缓存更新。
+            //注意如果使用了updateCache那请全部set方法内都使用，不然未执行updateCache的内容需要再提交一次update
+        }
+        this.age = age;
+    }
+    }
+```
 - 创建一条数据
 
 ```java
-
+   User user = new User();
+   user.create(new CreateCallback() {
+            @Override
+            public void onCallback(int code, String msg) {
+                 //可以在这里直接执行UI更新等。
+                 //200 成功，之后可直接操作user
+                 //400 失败，排查原因后，再次执行create
+            }
+        });
 ```
 
 - 删除一条数据
 
 ```java
-
+ user.delete(new DeleteCallback() {
+            @Override
+            public void onCallback(int code, String msg) {
+                 //200 成功，之后对象内的objectId将自动删除
+                 //400 失败，排查原因后，再次执行delete
+            }
+        });
 ```
 
 - 更新一条数据
 
 ```java
-
+ user.setAge(11);
+ user.update(new UpdateCallback() {
+            @Override
+            public void onCallback(int code, String msg) {
+                 //200 成功
+                 //400 失败，排查原因后，再次执行update
+            }
+        });
 ```
 
 - 查询一条数据
 
 ```java
-
+   T1YQuery query = new T1YQuery();
+   query.getDataById(User.class,objectID, new QueryCallback<User>() {
+            @Override
+            public void onCallback(int code, String msg, User data) {
+                
+            }
+   });
 ```
 
 - 查询全部数据（分页查询）
 
 ```java
+  query.getDataAll(User.class, 1, 10, new QueryCallback<List<User>>() {
+            @Override
+            public void onCallback(int code, String msg, List<User> data) {
+                
+            }
+        });
+```
 
+- 批量删除
+  
+```java
+  DeleteBatch<User> userDeleteBatch = new DeleteBatch<>();
+  //可复用
+  userDeleteBatch.put(user1);
+  userDeleteBatch.put(user2);
+  query.deleteAll(userDeleteBatch, new DeleteCallback() {
+            @Override
+            public void onCallback(int code, String msg) {
+                
+            }
+        });
+```
+- 批量添加
+```java
+  CreateBatch<User> userCreateBatch = new CreateBatch<>();
+  //可复用
+  userCreateBatch.put(user1);
+  userCreateBatch.put(user2);
+  query.createAll(userCreateBatch, new CreateCallback() {
+            @Override
+            public void onCallback(int code, String msg) {
+                
+            }
+        });
 ```
 
 ## 运行效果
