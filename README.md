@@ -23,6 +23,31 @@ gradle
 	}
  
 ```
+## 添加依赖
+
+```gradle
+implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+implementation 'com.google.code.gson:gson:2.10.1'
+```
+
+## 配置权限
+
+```xml
+<!-- 访问网络权限 -->
+<uses-permission android:name="android.permissionINTERNET" />
+<!-- 访问网络状态权限 -->
+<uses-permission android:name="android.permissionACCESS_NETWORK_STATE" />
+<!-- 访问Wi-Fi状态权限 -->
+<uses-permission android:name="android.permissionACCESS_WIFI_STATE" />
+```
+
+## 配置允许 HTTP 访问
+
+如果你的应用目标为 Android 9（API 级别 28）或更高版本，还需要在清单文件中明确声明允许使用 HTTP 的域名。这可以通过在 `AndroidManifest.xml` 中的 `<application>` 元素内部添加以下内容来完成：
+
+```xml
+android:usesCleartextTraffic="true"
+```
 
 ## 类库说明 
 - 回调线程问题
